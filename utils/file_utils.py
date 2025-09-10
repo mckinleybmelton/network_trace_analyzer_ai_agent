@@ -53,6 +53,7 @@ def handle_har_file(path: Path):
         return
 
     try:
+        logger.debug("Entering analyze_har")
         results = analyze_har(har)
         logger.info("Analysis summary: %s", results)
         move_to = cfg.process_dir / path.name

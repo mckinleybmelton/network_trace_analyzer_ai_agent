@@ -27,7 +27,7 @@ class Config:
             log_level=os.getenv("LOG_LEVEL", "INFO"),
             file_settle_seconds=float(os.getenv("FILE_SETTLE_SECONDS", "1.0")),
             max_wait_seconds=float(os.getenv("MAX_WAIT_SECONDS", "30.0")),
-            valid_extension=os.getenv("VALID_EXTENSION", ". ").lower(),
+            valid_extension=os.getenv("VALID_EXTENSION", ".har").lower(),
         )
     
 # --------------- Helper Method ----------------

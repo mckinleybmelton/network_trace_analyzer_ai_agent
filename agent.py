@@ -42,6 +42,8 @@ class HarEventHandler(FileSystemEventHandler):
                 handle_har_file(path)
             except Exception:
                 logger.exception("Unhandled error processing %s", path)
+        else:
+            logger.info("Ignoring non-HAR file: %s", path)
 
 def run():
     logger.info("Starting HAR agent. Watch dir: %s", cfg.watch_dir)
