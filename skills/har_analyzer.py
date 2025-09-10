@@ -5,7 +5,7 @@ from utils.logging_utils import getLogger
 
 logger = getLogger()
 
-def scrub_sensitive_data(har: dict) -> dict:
+async def scrub_sensitive_data(har: dict) -> dict:
     """
     Scrub sensitive information from HAR file including:
     - Authorization headers (Bearer tokens, API keys)
@@ -49,7 +49,7 @@ def scrub_sensitive_data(har: dict) -> dict:
         'sessionid', 'auth', 'authorization', 'key', 'secret'
     }
     
-    def scrub_string(text: str) -> str:
+    async def scrub_string(text: str) -> str:
         """Replace sensitive patterns in a string with [REDACTED]"""
         if not isinstance(text, str):
             return text
@@ -58,7 +58,7 @@ def scrub_sensitive_data(har: dict) -> dict:
             text = re.sub(pattern, '[REDACTED]', text, flags=re.IGNORECASE)
         return text
     
-    def scrub_url(url: str) -> str:
+    async def scrub_url(url: str) -> str:
         """Remove sensitive query parameters from URLs"""
         if '?' not in url:
             return url
@@ -78,7 +78,7 @@ def scrub_sensitive_data(har: dict) -> dict:
                 
         return f"{base_url}?{'&'.join(params)}"
     
-    def scrub_headers(headers: list) -> list:
+    async def scrub_headers(headers: list) -> list:
         """Remove sensitive information from headers"""
         logger.info("Scrubbing headers")
         scrubbed_headers = []
@@ -162,7 +162,7 @@ def scrub_sensitive_data(har: dict) -> dict:
     logger.info("Scrubbed sensitive data from HAR file and saved to: %s", scrubbed_file)
     return scrubbed_har
 
-def analyze_har(har: dict) -> dict:
+async def analyze_har(har: dict) -> dict:
     """
     Analyze HAR file data after scrubbing sensitive information.
     

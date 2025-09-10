@@ -1,14 +1,19 @@
+import asyncio
+import os
 import sys
 import time
 import logging
 from pathlib import Path
 
 from utils.config_utils import getConfig
-from utils.file_utils import handle_har_file
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileSystemEvent
+from har_event_handler import HarEventHandler
+from constants import Constants
+
 
 cfg = getConfig()
+
+os.environ['OPENAI_API_KEY'] = Constants.OPENAI_API_KEY
 
 # Ensure directories exist
 cfg.watch_dir.mkdir(parents=True, exist_ok=True)
@@ -21,31 +26,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("har-agent")
 
-# ---------- Watcher ----------
-
-class HarEventHandler(FileSystemEventHandler):
-    def on_created(self, event: FileSystemEvent):
-        logger.info("create event registered: %s", event.src_path)
-        self._maybe_process(event)
-
-    def on_moved(self, event: FileSystemEvent):
-        logger.info("move event registered: %s -> %s", event.src_path, getattr(event, "dest_path", ""))
-        self._maybe_process(event)
-
-    def _maybe_process(self, event: FileSystemEvent):
-        if event.is_directory:
-            return
-        path = Path(event.src_path)
-        logger.info("processing file: %s", path)
-        if path.suffix.lower() == cfg.valid_extension:
-            try:
-                handle_har_file(path)
-            except Exception:
-                logger.exception("Unhandled error processing %s", path)
-        else:
-            logger.info("Ignoring non-HAR file: %s", path)
-
-def run():
+async def main():
     logger.info("Starting HAR agent. Watch dir: %s", cfg.watch_dir)
     event_handler = HarEventHandler()
     observer = Observer()
@@ -64,7 +45,7 @@ def run():
 
 if __name__ == "__main__":
     try:
-        run()
+        asyncio.run(main())
     except Exception:
         logger.exception("Fatal error in HAR agent. Please relaunch the agent.")
         sys.exit(1)

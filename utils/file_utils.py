@@ -12,7 +12,7 @@ logger = getLogger()
 cfg = getConfig()
 
 # Wait until file is stable (not changing size) before processing
-def wait_until_file_is_stable(path: Path, settle_seconds: float, max_wait_seconds: float) -> bool:
+async def wait_until_file_is_stable(path: Path, settle_seconds: float, max_wait_seconds: float) -> bool:
     """Wait until file size stops changing to avoid parsing a partial write."""
     logger.debug("Waiting for file to stabilize: %s", path)
     elapsed = 0.0
@@ -33,12 +33,12 @@ def wait_until_file_is_stable(path: Path, settle_seconds: float, max_wait_second
     return False
 
 # Load HAR file safely
-def load_har(path: Path) -> Optional[dict]:
+async def load_har(path: Path) -> Optional[dict]:
     with path.open("r", encoding="utf-8", errors="replace") as f:
         return json.load(f)
 
 # Main logic to handle processing of HAR file
-def handle_har_file(path: Path):
+async def handle_har_file(path: Path):
     logger.info("Processing HAR: %s", path)
     if not wait_until_file_is_stable(path, cfg.file_settle_seconds, cfg.max_wait_seconds):
         logger.error("Skipping unstable file: %s", path)
