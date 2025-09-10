@@ -1,0 +1,6 @@
+run_output/
+dist/
+watch/
+__pycache__/
+*.lock
+constants.py

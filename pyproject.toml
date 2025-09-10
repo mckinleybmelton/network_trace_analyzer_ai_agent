@@ -1,0 +1,17 @@
+[project]
+name = "network-trace-analyzer-ai-agent"
+version = "0.1.0"
+description = "The network trace analyzer AI Agent deploys on edge and automatically triggers when a har file or log file is downloaded form an external source. It scans the files for safety, and then parses them and runs real time analysis on the files to help with tracking specific issues."
+authors = [
+    {name = "McKinley Melton"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "watchdog (>=6.0.0,<7.0.0)"
+]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
